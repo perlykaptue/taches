@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutons Dépliants Horizontaux</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url(images/IMG_E9431.JPG);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .horizontal-accordion {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+        
+        .accordion-button {
+            position: relative;
+            flex: 1;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 80px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* Couleurs et fonds différents pour chaque bouton */
+        .accordion-button:nth-child(1) {
+            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+            background: url(images/IMG_E9447.JPG);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .accordion-button:nth-child(2) {
+            background: linear-gradient(45deg, #4776E6, #8E54E9);
+            background: url(images/IMG_E9446.JPG);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .accordion-button:nth-child(3) {
+            background: linear-gradient(45deg, #1D976C, #93F9B9);
+            background: url(images/IMG_E9444.JPG);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .accordion-button:nth-child(4) {
+            background: linear-gradient(45deg, #DA22FF, #9733EE);
+            background: url(images/IMG_E9443.JPG);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .accordion-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            transition: all 0.4s;
+        }
+        
+        .accordion-button:hover::before {
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .button-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            color: white;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.5s 0.1s;
+        }
+        
+        .button-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .button-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s 0.2s;
+        }
+        
+        .accordion-button.active {
+            flex: 3;
+            min-width: 300px;
+        }
+        
+        .accordion-button.active::before {
+            background: rgba(0,0,0,0.6);
+        }
+        
+        .accordion-button.active .button-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .accordion-button.active .button-text {
+            max-height: 200px;
+        }
+        
+        /* Effet au survol des boutons non actifs */
+        .accordion-button:not(.active):hover {
+            transform: translateY(-10px) scale(1.03);
+        }
+        
+        /* Animation de la bordure */
+        .accordion-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: white;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s;
+        }
+        
+        .accordion-button.active::after {
+            transform: scaleX(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="horizontal-accordion">
+        <div class="accordion-button active">
+            <div class="button-content">
+                <h3 class="button-title">Gestionnaire des taches</h3>
+                <div class="button-text">
+                    <p>Concevez et affectez vos taches aux ouvriers de la structure plus facilement.</p>
+                    <button onclick="window.location.href='essai.html'" style="margin-top: 15px; padding: 8px 20px; border: none; border-radius: 50px; background: white; color: #ff4d4d; font-weight: bold; cursor: pointer;">Entrer</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-button">
+            <div class="button-content">
+                <h3 class="button-title">Gestionnaire des Rapport</h3>
+                <div class="button-text">
+                    <p>Etablissez des rapports pouvant résumer les prestations effectuées, celles en cour et celles non effectuées pour de meilleures analyses.</p>
+                    <button onclick="window.location.href='rappo.html'" style="margin-top: 15px; padding: 8px 20px; border: none; border-radius: 50px; background: white; color: #4776E6; font-weight: bold; cursor: pointer;">Rédiger</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-button">
+            <div class="button-content">
+                <h3 class="button-title">Reception des affections</h3>
+                <div class="button-text">
+                    <p>Regardez les taches qui vous ont été assignées ici.</p>
+                    <button onclick="window.location.href='recep.html'" style="margin-top: 15px; padding: 8px 20px; border: none; border-radius: 50px; background: white; color: #1D976C; font-weight: bold; cursor: pointer;">Voir plus</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-button">
+            <div class="button-content">
+                <h3 class="button-title">Guide d'utilisation</h3>
+                <div class="button-text">
+                    <p>Vous ne savez pas comment vous orienter ? pas de panique, consulter notre guide d'utilisation.</p>
+                    <button onclick="window.location.href='guide.html'" style="margin-top: 15px; padding: 8px 20px; border: none; border-radius: 50px; background: white; color: #DA22FF; font-weight: bold; cursor: pointer;">Ouvrir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.accordion-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Si le bouton est déjà actif, on ne fait rien
+                if (button.classList.contains('active')) return;
+                
+                // Retire la classe active de tous les boutons
+                document.querySelectorAll('.accordion-button').forEach(otherButton => {
+                    otherButton.classList.remove('active');
+                });
+                
+                // Ajoute la classe active au bouton cliqué
+                button.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

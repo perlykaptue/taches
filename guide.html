@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide d'Utilisation Interactif</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .magic-book {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            perspective: 2000px;
+            position: relative;
+        }
+
+        .book-cover {
+            background: linear-gradient(145deg, #0f3460, #533d81);
+            border-radius: 10px 0 0 10px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+        }
+
+        .book-cover h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            z-index: 2;
+            animation: glow 2s infinite alternate;
+        }
+
+        .guide-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23ffffff" d="M50 0 L100 50 L50 100 L0 50 Z M20 50 L50 20 L80 50 L50 80 Z M35 50 L50 35 L65 50 L50 65 Z"/></svg>');
+            background-size: 100px 100px;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #fff; }
+            to { text-shadow: 0 0 15px #fff, 0 0 20px #e94560; }
+        }
+
+        .book-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f8f8f8, #e2e2e2);
+            color: #333;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            transform-origin: left;
+            transition: all 0.7s ease;
+            backface-visibility: hidden;
+            opacity: 0;
+            transform: rotateY(90deg);
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: rotateY(0deg);
+        }
+
+        .page h2 {
+            color: #0f3460;
+            border-bottom: 2px solid #e94560;
+            padding-bottom: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .accordion {
+            margin: 20px 0;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .accordion-header {
+            background: linear-gradient(to right, #0f3460, #533d81);
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(to right, #533d81, #e94560);
+        }
+
+        .accordion-content {
+            background: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.3s ease;
+        }
+
+        .accordion-content-inner {
+            padding: 20px;
+        }
+
+        .accordion.active .accordion-content {
+            max-height: 500px;
+            padding: 0;
+        }
+
+        .book-controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .book-controls button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+
+        .book-controls button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Effet de page qui tourne */
+        .page.turning {
+            transform: rotateY(-180deg);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Particules magiques */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Styles pour les tâches */
+        .task-visual {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .task-step {
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #e94560, #533d81);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Status des tâches */
+        .status-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .status-list li {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-new, .status-in-progress, .status-completed {
+            padding: 5px 10px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .status-new {
+            background-color: #e94560;
+        }
+
+        .status-in-progress {
+            background-color: #ffd700;
+        }
+
+        .status-completed {
+            background-color: #4CAF50;
+        }
+
+        /* Effet de célébration */
+        .celebrate {
+            animation: celebrate 0.5s;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Icône de guide */
+        .guide-icon {
+            font-size: 4rem;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="magic-book">
+        <div class="book-cover">
+            <div class="guide-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h1>Guide d'Utilisation</h1>
+            <div class="guide-pattern"></div>
+        </div>
+        
+        <div class="book-content">
+            <!-- Pages seront ajoutées dynamiquement -->
+        </div>
+        
+        <div class="book-controls">
+            <button id="prev-page"><i class="fas fa-chevron-left"></i></button>
+            <button id="next-page"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookContent = document.querySelector('.book-content');
+            const prevBtn = document.getElementById('prev-page');
+            const nextBtn = document.getElementById('next-page');
+            let currentPage = 0;
+            
+            // Données des pages
+            const pagesData = [
+                {
+                    title: "Bienvenue dans le Guide d'Utilisation",
+                    content: `
+                        <div class="welcome-animation">
+                            <p style="animation: fadeIn 2s;">Utilisez les flèches pour naviguer ou explorez les sections ci-dessous</p>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Introduction</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <p>Ce guide interactif vous accompagnera dans l'imprégnation et la compréhension de notre système.</p>
+                                    <p>Toutes les fonctionnalités sont expliquées de manière claire et visuelle.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Comment utiliser ce guide</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <ul>
+                                        <li><i class="fas fa-arrow-right"></i> Utilisez les boutons en bas pour tourner les pages</li>
+                                        <li><i class="fas fa-hand-pointer"></i> Cliquez sur les en-têtes pour développer les sections</li>
+                                        <li><i class="fas fa-search"></i> Explorez chaque section à votre rythme</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "Accès et Permissions",
+                    content: `
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Types d'Accès</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <ul>
+                                        <li><i class="fas fa-user-shield"></i> Administrateur - Accès complet</li>
+                                        <li><i class="fas fa-user-tie"></i> Gestionnaire - Accès étendu</li>
+                                        <li><i class="fas fa-user"></i> Utilisateur - Accès standard</li>
+                                        <li><i class="fas fa-user-clock"></i> Invité - Accès limité</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Gestion des Permissions</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <p>Les permissions sont gérées dans la section Paramètres > Sécurité.</p>
+                                    <div style="background: #f0f0f0; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                                        <p><strong>Astuce :</strong> Vous pouvez créer des groupes de permissions pour faciliter la gestion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Bonnes Pratiques</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <ol>
+                                        <li>Appliquez le principe du dur labeur</li>
+                                        <li>Révisez régulièrement le guide d'utilisation</li>
+                                        <li>Utilisez l'authentification pour les accès</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "Gestion des Tâches",
+                    content: `
+                        <div class="task-visual">
+                            <div class="task-step" style="animation-delay: 0.2s;">
+                                <div class="step-number">1</div>
+                                <p>Création de tâche</p>
+                            </div>
+                            <div class="task-step" style="animation-delay: 0.4s;">
+                                <div class="step-number">2</div>
+                                <p>Assignation</p>
+                            </div>
+                            <div class="task-step" style="animation-delay: 0.6s;">
+                                <div class="step-number">3</div>
+                                <p>Suivi</p>
+                            </div>
+                            <div class="task-step" style="animation-delay: 0.8s;">
+                                <div class="step-number">4</div>
+                                <p>Validation</p>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Workflow des Tâches</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <p>Le système permet de créer, assigner et suivre l'avancement des tâches.</p>
+                                    <p>Chaque étape est représentée par un code couleur :</p>
+                                    <ul class="status-list">
+                                        <li><span class="status-new">Nouveau</span> - Tâche nouvellement créée</li>
+                                        <li><span class="status-in-progress">En cours</span> - Tâche en cours de réalisation</li>
+                                        <li><span class="status-completed">Terminé</span> - Tâche finalisée et validée</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Notifications</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <p>Le système envoie des notifications pour :</p>
+                                    <ul>
+                                        <li><i class="fas fa-bell" style="color: #e94560;"></i> Nouvelles tâches assignées</li>
+                                        <li><i class="fas fa-clock" style="color: #ffd700;"></i> Échéances approchantes</li>
+                                        <li><i class="fas fa-check-circle" style="color: #4CAF50;"></i> Tâches complétées</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "Rapports et Analytics",
+                    content: `
+                        <div style="text-align: center; margin: 20px 0;">
+                            <i class="fas fa-chart-pie" style="font-size: 4rem; color: #0f3460;"></i>
+                            <h3 style="color: #533d81;">Données en temps réel</h3>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Types de Rapports</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                                        <div style="text-align: center; margin: 10px; padding: 15px; background: #f0f0f0; border-radius: 5px; width: 120px;">
+                                            <i class="fas fa-tasks" style="font-size: 2rem; color: #e94560;"></i>
+                                            <p>Productivité</p>
+                                        </div>
+                                        <div style="text-align: center; margin: 10px; padding: 15px; background: #f0f0f0; border-radius: 5px; width: 120px;">
+                                            <i class="fas fa-users" style="font-size: 2rem; color: #0f3460;"></i>
+                                            <p>Équipe</p>
+                                        </div>
+                                        <div style="text-align: center; margin: 10px; padding: 15px; background: #f0f0f0; border-radius: 5px; width: 120px;">
+                                            <i class="fas fa-clock" style="font-size: 2rem; color: #ffd700;"></i>
+                                            <p>Temps</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Export des Données</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <p>Vous pouvez exporter les données dans différents formats :</p>
+                                    <ul>
+                                        <li><i class="far fa-file-excel" style="color: #1D6F42;"></i> Excel (.xlsx)</li>
+                                        <li><i class="far fa-file-pdf" style="color: #D32626;"></i> PDF</li>
+                                        <li><i class="far fa-file-alt" style="color: #333;"></i> CSV</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    title: "Support et Aide",
+                    content: `
+                        <div style="text-align: center; margin: 30px 0;">
+                            <i class="fas fa-hands-helping" style="font-size: 4rem; color: #e94560;"></i>
+                            <h3 style="color: #0f3460;">Nous sommes là pour vous aider</h3>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>Contactez le support</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <p><i class="fas fa-envelope"></i> Email : regiephytosanitaireetsanitaire@gmal.com</p>
+                                    <p><i class="fas fa-phone"></i> Téléphone : 6 93 17 59 25</p>
+                                    <p><i class="fas fa-comment-dots"></i> Chat en direct : disponible dans l'application</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <span>FAQ</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-content-inner">
+                                    <div style="background: #f8f8f8; padding: 15px; border-left: 4px solid #e94560; margin-bottom: 10px;">
+                                        <p><strong>Q: Comment réinitialiser mon mot de passe ?</strong></p>
+                                        <p>R: Cliquez sur "Mot de passe oublié" sur la page de connexion.</p>
+                                    </div>
+                                    <div style="background: #f8f8f8; padding: 15px; border-left: 4px solid #0f3460; margin-bottom: 10px;">
+                                        <p><strong>Q: Comment changer les informations d'un ouvrier ?</strong></p>
+                                        <p>R: Allez dans "le gestionnaire de taches" > "section ouvriers" dans le menu principal.</p>
+                                    </div>
+                                    <div style="background: #f8f8f8; padding: 15px; border-left: 4px solid #0f3460; margin-bottom: 10px;">
+                                        <p><strong>Q: Comment vérifier les taches qui vous sont assignées ?</strong></p>
+                                        <p>R: Allez dans "Reception des affectations" > "Nouvelles affectations" dans le menu principal.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px;">
+                            <button style="background: linear-gradient(to right, #e94560, #533d81); color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                <i class="fas fa-question-circle"></i> Aide supplémentaire
+                            </button>
+                        </div>
+                    `
+                }
+            ];
+            
+            // Créer les pages
+            function createPages() {
+                pagesData.forEach((page, index) => {
+                    const pageElement = document.createElement('div');
+                    pageElement.className = `page ${index === 0 ? 'active' : ''}`;
+                    pageElement.dataset.index = index;
+                    pageElement.innerHTML = `
+                        <h2>${page.title}</h2>
+                        ${page.content}
+                    `;
+                    bookContent.appendChild(pageElement);
+                });
+                
+                // Initialiser les accordéons
+                initAccordions();
+            }
+            
+            // Initialiser les accordéons
+            function initAccordions() {
+                const accordionHeaders = document.querySelectorAll('.accordion-header');
+                
+                accordionHeaders.forEach(header => {
+                    header.addEventListener('click', function() {
+                        const accordion = this.parentElement;
+                        const isActive = accordion.classList.contains('active');
+                        
+                        // Fermer tous les accordéons
+                        document.querySelectorAll('.accordion').forEach(acc => {
+                            acc.classList.remove('active');
+                            const icon = acc.querySelector('.accordion-header i');
+                            icon.classList.remove('fa-chevron-up');
+                            icon.classList.add('fa-chevron-down');
+                        });
+                        
+                        // Ouvrir celui-ci si ce n'était pas déjà le cas
+                        if (!isActive) {
+                            accordion.classList.add('active');
+                            const icon = this.querySelector('i');
+                            icon.classList.remove('fa-chevron-down');
+                            icon.classList.add('fa-chevron-up');
+                            
+                            // Animation pour le contenu
+                            const content = accordion.querySelector('.accordion-content-inner');
+                            content.style.animation = 'fadeIn 0.5s';
+                            setTimeout(() => content.style.animation = '', 500);
+                        }
+                    });
+                });
+            }
+            
+            // Navigation entre les pages
+            function goToPage(pageIndex) {
+                if (pageIndex < 0 || pageIndex >= pagesData.length) return;
+                
+                const currentActive = document.querySelector('.page.active');
+                const nextPage = document.querySelector(`.page[data-index="${pageIndex}"]`);
+                
+                if (currentActive) {
+                    currentActive.classList.remove('active');
+                    currentActive.classList.add('turning');
+                    
+                    setTimeout(() => {
+                        currentActive.classList.remove('turning');
+                    }, 700);
+                }
+                
+                nextPage.classList.add('active');
+                currentPage = pageIndex;
+                
+                // Animation d'entrée pour le contenu de la nouvelle page
+                const headings = nextPage.querySelectorAll('h2, .accordion, .task-step');
+                headings.forEach((heading, i) => {
+                    heading.style.animation = `fadeIn 0.5s ease-out ${i * 0.1}s forwards`;
+                    heading.style.opacity = '0';
+                    
+                    // Réinitialiser pour permettre la réanimation
+                    setTimeout(() => {
+                        heading.style.animation = '';
+                        heading.style.opacity = '';
+                    }, 1000);
+                });
+            }
+            
+            // Événements
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < pagesData.length - 1) {
+                    goToPage(currentPage + 1);
+                } else {
+                    // Effet spécial quand on arrive à la fin
+                    const book = document.querySelector('.magic-book');
+                    book.classList.add('celebrate');
+                    setTimeout(() => book.classList.remove('celebrate'), 2000);
+                    
+                    // Retour à la première page après un délai
+                    setTimeout(() => {
+                        goToPage(0);
+                    }, 1000);
+                }
+            });
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 0) {
+                    goToPage(currentPage - 1);
+                }
+            });
+            
+            // Créer les pages au chargement
+            createPages();
+            
+            // Animation initiale
+            setTimeout(() => {
+                document.querySelector('.book-cover').style.transform = 'translateX(-100%)';
+                document.querySelector('.book-content').style.transform = 'translateX(0)';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

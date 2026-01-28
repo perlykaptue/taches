@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Tâches | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7b2cbf;
+            --secondary: #e0aaff;
+            --accent: #ff9e00;
+            --dark: #212529;
+            --light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(123, 44, 191, 0.1) 0%, rgba(255, 158, 0, 0.05) 90%);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .dashboard {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Volet gauche */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(135deg, rgba(123, 44, 191, 0.95) 0%, rgba(82, 13, 153, 0.95) 100%);
+            padding: 20px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            color: white;
+        }
+        
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(224, 170, 255, 0.6);
+        }
+        
+        /* Liste des tâches */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .task-item {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .task-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), var(--primary));
+        }
+        
+        .task-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+        }
+        
+        .task-item h3 {
+            margin: 0 0 5px 0;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .task-item p {
+            margin: 0 0 8px 0;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        /* Volet droit */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.8);
+        }
+        
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(123, 44, 191, 0.15);
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 158, 0, 0.05),
+                rgba(123, 44, 191, 0.05),
+                rgba(224, 170, 255, 0.05)
+            );
+            transform: rotate(30deg);
+            z-index: 0;
+            animation: shine 6s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        .form-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-title {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.25);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .workers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .worker-option {
+            position: relative;
+        }
+        
+        .worker-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .worker-option label {
+            display: block;
+            padding: 8px;
+            background: rgba(123, 44, 191, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .worker-option input:checked + label {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(123, 44, 191, 0.5);
+        }
+        
+        .worker-option:hover label {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(123, 44, 191, 0.2);
+        }
+        
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #9d4edd);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(123, 44, 191, 0.4);
+        }
+        
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0.3),
+                rgba(255,255,255,0)
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            .main-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Volet gauche -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-tasks"></i> Tâches</h2>
+                <button id="logoutBtn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Déco
+                </button>
+            </div>
+            <div class="task-list" id="taskList">
+                <div class="task-item floating" style="animation-delay: 0.2s;">
+                    <h3>Réparation électrique</h3>
+                    <p>Panneau principal - Bâtiment A</p>
+                    <div class="task-meta">
+                        <span>15-20 Avril</span>
+                        <span>2 ouvriers</span>
+                    </div>
+                </div>
+                <div class="task-item floating" style="animation-delay: 0.4s;">
+                    <h3>Peinture façade</h3>
+                    <p>Couleur: Blanc cassé</p>
+                    <div class="task-meta">
+                        <span>22-30 Avril</span>
+                        <span>3 ouvriers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Volet droit -->
+        <div class="main-content">
+            <div class="form-container">
+                <div class="form-content">
+                    <h2 class="form-title"><i class="fas fa-magic"></i> Nouvelle Tâche</h2>
+                    <form id="taskForm">
+                        <div class="form-group">
+                            <label for="taskName">Nom</label>
+                            <input type="text" id="taskName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskDesc">Description</label>
+                            <textarea id="taskDesc" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Dates</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="date" id="startDate" class="form-control" style="flex: 1;" required>
+                                <input type="date" id="endDate" class="form-control" style="flex: 1;" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ouvriers</label>
+                            <div class="workers-grid" id="workersSelect">
+                                <!-- Dynamically loaded -->
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-sparkles"></i> Valider
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Données simulées
+            const workers = [
+                {id: 1, name: "Jean D."},
+                {id: 2, name: "Marie L."},
+                {id: 3, name: "Paul M."},
+                {id: 4, name: "Sophie D."},
+                {id: 5, name: "Thomas P."},
+                {id: 6, name: "Lucie B."}
+            ];
+            
+            // Chargement des ouvriers
+            function loadWorkers() {
+                let html = '';
+                workers.forEach(worker => {
+                    html += `
+                        <div class="worker-option">
+                            <input type="checkbox" id="worker-${worker.id}" value="${worker.id}">
+                            <label for="worker-${worker.id}">${worker.name}</label>
+                        </div>
+                    `;
+                });
+                $('#workersSelect').html(html);
+            }
+            
+            // Gestion de la déconnexion
+            $('#logoutBtn').click(function() {
+                window.location.href = 'test.html';
+            });
+            
+            // Soumission du formulaire
+            $('#taskForm').submit(function(e) {
+                e.preventDefault();
+                
+                // Récupération des données
+                const taskName = $('#taskName').val();
+                const selectedWorkers = [];
+                $('input[type="checkbox"]:checked').each(function() {
+                    selectedWorkers.push($(this).val());
+                });
+                
+                // Validation
+                if (selectedWorkers.length === 0) {
+                    alert('Sélectionnez au moins un ouvrier');
+                    return;
+                }
+                
+                // Animation de succès
+                $('.btn-submit').html('<i class="fas fa-check"></i> Enregistré !');
+                $('.btn-submit').css('background', 'linear-gradient(135deg, #00b894, #55efc4)');
+                
+                setTimeout(() => {
+                    $('.btn-submit').html('<i class="fas fa-sparkles"></i> Valider');
+                    $('.btn-submit').css('background', 'linear-gradient(135deg, var(--primary), #9d4edd)');
+                    $('#taskForm')[0].reset();
+                }, 2000);
+            });
+            
+            // Initialisation
+            loadWorkers();
+            
+            // Effet de brillance aléatoire
+            setInterval(() => {
+                $('.task-item').each(function() {
+                    if (Math.random() > 0.7) {
+                        $(this).css('box-shadow', `0 0 ${Math.random() * 15 + 5}px rgba(123, 44, 191, ${Math.random() * 0.3 + 0.2})`);
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Éblouissant</title>
+    <style>
+        :root {
+            --noir: #0a0a0a;
+            --noir-clair: #1a1a1a;
+            --violet: #bb86fc;
+            --violet-fonce: #3700b3;
+            --bleu: #03dac6;
+            --rouge: #cf6679;
+            --vert: #00ff88;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--noir);
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Effets de particules flottantes */
+        .particle {
+            position: fixed;
+            background: var(--violet);
+            border-radius: 50%;
+            filter: blur(1px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Header avec effet néon */
+        header {
+            background: linear-gradient(90deg, var(--noir), var(--noir-clair));
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--violet);
+            box-shadow: 0 0 20px rgba(187, 134, 252, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            100% { left: 100%; }
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--violet), var(--bleu));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(187, 134, 252, 0.5);
+        }
+
+        /* Bouton de déconnexion avec effet */
+        .logout-btn {
+            background: var(--rouge);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(207, 102, 121, 0.4);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(207, 102, 121, 0.6);
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Conteneur principal avec effet de défilement doux */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+            height: 70vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Style de la scrollbar */
+        .container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: var(--noir);
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: var(--violet);
+            border-radius: 4px;
+        }
+
+        /* Carte de tâche avec effets */
+        .task {
+            background: var(--noir-clair);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.5s;
+        }
+
+        .task:nth-child(1) { animation-delay: 0.1s; }
+        .task:nth-child(2) { animation-delay: 0.3s; }
+        .task:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .task::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--violet), transparent);
+            transform: rotate(45deg);
+            opacity: 0.1;
+            transition: 0.5s;
+        }
+
+        .task:hover::before {
+            animation: borderLight 1.5s infinite;
+        }
+
+        @keyframes borderLight {
+            0% { left: -50%; top: -50%; }
+            100% { left: 150%; top: 150%; }
+        }
+
+        .task h3 {
+            margin: 0 0 1rem 0;
+            color: var(--violet);
+            font-size: 1.5rem;
+        }
+
+        /* Sélecteur de statut avec effet */
+        .status-select {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid var(--violet);
+            padding: 0.7rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23bb86fc'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1rem;
+        }
+
+        .status-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--violet);
+        }
+
+        /* Effet WAOUH */
+        @keyframes waouh {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        .waouh-effect {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--violet), transparent 70%);
+            border-radius: 50%;
+            z-index: 1000;
+            pointer-events: none;
+            animation: waouh 1s forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Effets de particules flottantes -->
+    <div id="particles"></div>
+
+    <header>
+        <h1>MES TÂCHES ASSIGNÉES</h1>
+        <button class="logout-btn" id="logoutBtn">DÉCONNEXION</button>
+    </header>
+
+    <div class="container" id="tasksContainer">
+        <!-- Tâche 1 -->
+        <div class="task" data-task-id="1">
+            <h3>Réparation électrique</h3>
+            <p>Changer les câbles dans le bâtiment A</p>
+            <p><strong>Dates :</strong> 15/11/2023 - 17/11/2023</p>
+            
+            <select class="status-select" onchange="updateStatus(this, 1)">
+                <option value="pending">Non démarrée</option>
+                <option value="in-progress" selected>En cours</option>
+                <option value="completed">Terminée</option>
+            </select>
+        </div>
+
+        <!-- Tâche 2 -->
+        <div class="task" data-task-id="2">
+            <h3>Peinture murale</h3>
+            <p>Peindre le hall d'entrée en blanc mat</p>
+            <p><strong>Dates :</strong> 18/11/2023 - 20/11/2023</p>
+            
+            <select class="status-select" onchange="updateStatus(this, 2)">
+                <option value="pending" selected>Non démarrée</option>
+                <option value="in-progress">En cours</option>
+                <option value="completed">Terminée</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        // Création des particules flottantes
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Position et taille aléatoires
+                const size = Math.random() * 10 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                
+                // Animation flottante
+                particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+                document.body.appendChild(particle);
+                
+                // Animation personnalisée
+                setInterval(() => {
+                    particle.style.transform = `translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px)`;
+                }, Math.random() * 3000 + 2000);
+            }
+        }
+
+        // Gestion des statuts avec effets
+        function updateStatus(selectElement, taskId) {
+            const newStatus = selectElement.value;
+            const taskElement = selectElement.closest('.task');
+            
+            // Effet visuel
+            taskElement.style.border = `2px solid ${newStatus === 'completed' ? 'var(--vert)' : 
+                                      newStatus === 'in-progress' ? 'var(--bleu)' : 'var(--rouge)'}`;
+            
+            // Effet de brillance
+            const highlight = document.createElement('div');
+            highlight.style.position = 'absolute';
+            highlight.style.top = '0';
+            highlight.style.left = '0';
+            highlight.style.width = '100%';
+            highlight.style.height = '100%';
+            highlight.style.background = 'radial-gradient(circle, rgba(187,134,252,0.3), transparent)';
+            highlight.style.opacity = '0';
+            highlight.style.transition = 'opacity 0.5s';
+            taskElement.appendChild(highlight);
+            
+            setTimeout(() => {
+                highlight.style.opacity = '1';
+                setTimeout(() => {
+                    highlight.style.opacity = '0';
+                    setTimeout(() => highlight.remove(), 500);
+                }, 300);
+            }, 10);
+            
+            // Notification si tâche terminée
+            if (newStatus === 'completed') {
+                setTimeout(() => {
+                    // Effet WAOUH
+                    const waouh = document.createElement('div');
+                    waouh.classList.add('waouh-effect');
+                    document.body.appendChild(waouh);
+                    setTimeout(() => waouh.remove(), 1000);
+                    
+                    // Notification
+                    alert(`Tâche #${taskId} terminée !\nNotification envoyée à l'admin.`);
+                }, 500);
+            }
+            
+            // Ici vous enverriez la mise à jour à votre base de données
+            console.log(`Tâche ${taskId} -> Statut: ${newStatus}`);
+        }
+
+        // Déconnexion
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            // Effet de transition avant la déconnexion
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s';
+            setTimeout(() => {
+                window.location.href = 'test.html';
+            }, 500);
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Apparition progressive des tâches
+            const tasks = document.querySelectorAll('.task');
+            tasks.forEach(task => {
+                task.style.visibility = 'visible';
+            });
+        });
+    </script>
+</body>
+</html>

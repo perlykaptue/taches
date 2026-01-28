@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Portail Magique</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary: #8a2be2;
+            --secondary: #ff1493;
+            --dark: #0f0524;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: radial-gradient(circle at center, #1a0638, #0a011f);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .register-container {
+            background: rgba(15, 5, 36, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.4);
+            width: 450px;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: scaleIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                rgba(255, 20, 147, 0.1),
+                transparent
+            );
+            transform: rotate(30deg);
+            animation: shine 8s infinite;
+            pointer-events: none;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+            text-shadow: 0 0 15px var(--secondary);
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: floatIn 0.6s forwards;
+        }
+        
+        .input-group:nth-child(1) { animation-delay: 0.7s; }
+        .input-group:nth-child(2) { animation-delay: 0.6s; }
+        .input-group:nth-child(3) { animation-delay: 0.5s; }
+        .input-group:nth-child(4) { animation-delay: 0.4s; }
+        .input-group:nth-child(5) { animation-delay: 0.3s; }
+        .input-group:nth-child(6) { animation-delay: 0.2s; }
+        .input-group:nth-child(7) { animation-delay: 0.1s; }
+        
+        label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards 0.9s;
+        }
+        
+        .voir-mdp {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .voir-mdp i {
+            font-size: 16px;
+            color: #666;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(
+                to right,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+        
+        button:hover::before {
+            left: 100%;
+            top: 100%;
+        }
+        
+        .btn-register {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.5);
+        }
+        
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        /* Éléments magiques */
+        .magic-particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatMagic 6s infinite;
+            opacity: 0;
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+            animation: sparkle 2s infinite;
+            filter: blur(0.5px);
+        }
+        
+        /* Animations */
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes floatIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-30%, -30%); }
+            100% { transform: rotate(30deg) translate(30%, 30%); }
+        }
+        
+        @keyframes floatMagic {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100px, -100px) rotate(180deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes sparkle {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+        }
+        
+        /* Étoiles filantes */
+        .shooting-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: shooting 5s infinite;
+            opacity: 0;
+        }
+        
+        @keyframes shooting {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(300px, -150px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>Portail d'Inscription</h1>
+        
+        <div class="input-group">
+            <label for="firstname">Prénom</label>
+            <input type="text" id="firstname" placeholder="Votre prénom">
+        </div>
+        
+        <div class="input-group">
+            <label for="lastname">Nom</label>
+            <input type="text" id="lastname" placeholder="Votre nom">
+        </div>
+        
+        <div class="input-group">
+            <label for="address">Adresse</label>
+            <input type="text" id="address" placeholder="Votre adresse complète">
+        </div>
+
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="exemple@email.com">
+        </div>
+        
+       <!-- <div class="input-group">
+            <label for="role">Rôle</label>
+            <select id="role">
+                <option value="" disabled selected>Sélectionnez un rôle</option>
+                <option value="admin">Administrateur</option>
+                <option value="worker">Ouvrier</option>
+            </select>
+        </div>-->
+        
+
+        <div class="input-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" placeholder="Créez un mot de passe">
+            <span class="voir-mdp">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+            </span>
+        </div>
+        
+        <div class="input-group">
+            <label for="Cnfpassword">Confirmer mot de passe</label>
+            <input type="password" id="Cnfpassword" placeholder="Confirmez le mot de passe">
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-back" id="back-btn">
+                Retour
+            </button>
+            <button class="btn-register" id="register-btn">
+                S'enregistrer
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Création d'éléments magiques
+        function createMagicElements() {
+            const colors = ['#ff1493', '#8a2be2', '#00ffff', '#ffff00'];
+            const shapes = ['★', '✦', '✧', '❂', '✺'];
+            
+            // Particules magiques
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('magic-particle');
+                particle.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                particle.style.color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.fontSize = `${Math.random() * 20 + 10}px`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                document.body.appendChild(particle);
+            }
+            
+            //voir le mot de passe
+            const mdpInput = document.getElementById('password');
+            const voirMdpSpan = document.querySelector('.voir-mdp');
+            voirMdpSpan.addEventListener('click', () => {
+                if (mdpInput.type === 'password') {
+                    mdpInput.type = 'text';
+                    voirMdpSpan.innerHTML = '<i class="fas fa-eye-slash" aria-hidden="true"></i>';
+                } else {
+                    mdpInput.type = 'password';
+                    voirMdpSpan.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i>';
+                }
+            });
+
+            // Étincelles
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = `${Math.random() * 100}vw`;
+                sparkle.style.top = `${Math.random() * 100}vh`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                sparkle.style.width = `${Math.random() * 6 + 2}px`;
+                sparkle.style.height = sparkle.style.width;
+                document.body.appendChild(sparkle);
+            }
+            
+            // Étoiles filantes
+            for (let i = 0; i < 5; i++) {
+                const star = document.createElement('div');
+                star.classList.add('shooting-star');
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.animationDelay = `${Math.random() * 10}s`;
+                star.style.animationDuration = `${Math.random() * 5 + 3}s`;
+                document.body.appendChild(star);
+            }
+        }
+        
+        // Effet spécial lors de l'enregistrement
+        document.getElementById('register-btn').addEventListener('click', function() {
+            this.innerHTML = '<span class="btn-loader"></span> Création du compte...';
+            
+            // Simulation de création de compte
+            setTimeout(() => {
+                this.textContent = 'Compte créé !';
+                this.style.background = 'linear-gradient(45deg, #00c853, #64dd17)';
+                
+                // Effet de confettis
+                createConfetti();
+                
+                // Redirection simulée
+                setTimeout(() => {
+                    this.textContent = 'S\'enregistrer';
+                    this.style.background = 'linear-gradient(45deg, var(--primary), var(--secondary))';
+                }, 1500);
+            }, 2000);
+        });
+        
+        // Effet de retour
+        document.getElementById('back-btn').addEventListener('click', function() {
+            document.querySelector('.register-container').style.animation = 'scaleIn 0.6s reverse forwards';
+            setTimeout(() => {
+                document.querySelector('.register-container').style.animation = 'scaleIn 0.6s forwards';
+            }, 600);
+        });
+        
+        // Création de confettis
+        function createConfetti() {
+            const colors = ['#ff1493', '#8a2be2', '#00ffff', '#ffff00', '#ff8c00'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = '-10px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.zIndex = '100';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                const animation = confetti.animate([
+                    { top: '-10px', opacity: 1, transform: `rotate(0deg) scale(1)` },
+                    { top: `${Math.random() * 100 + 50}vh`, opacity: 0.7, transform: `rotate(${Math.random() * 360}deg) scale(0.5)` }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+                
+                document.body.appendChild(confetti);
+            }
+        }
+        
+        // Initialisation
+        window.onload = function() {
+            createMagicElements();
+        };
+        
+document.getElementById('back-btn').addEventListener('click', function() {
+    // Animation de disparition
+    document.querySelector('.register-container').style.animation = 'scaleIn 0.6s reverse forwards';
+    
+    // Redirection après l'animation
+    setTimeout(() => {
+        window.location.href = 'conne.html';
+    }, 600);
+});
+    </script>
+</body>
+</html>
